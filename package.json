@@ -1,0 +1,21 @@
+{
+  "name": "mailflow-mcp",
+  "version": "0.1.0",
+  "description": "MCP bridge for MailFlow: read mail and save drafts through MailFlow's API tokens",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "mailflow-mcp": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  }
+}

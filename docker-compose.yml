@@ -1,0 +1,28 @@
+# The MCP bridge as an extra container next to an existing MailFlow stack. It joins MailFlow's
+# Docker network and talks to the backend there; MailFlow itself is not changed.
+services:
+  mailflow-mcp:
+    build: .
+    container_name: mailflow-mcp
+    restart: unless-stopped
+    environment:
+      # MailFlow's backend inside the Docker network (its container_name in MailFlow's compose file).
+      MAILFLOW_URL: ${MAILFLOW_URL:-http://mailflow-backend:3000}
+      PORT: 3100
+      # Optional, only for assistants that cannot send an Authorization header. See README.
+      MAILFLOW_API_TOKEN: ${MAILFLOW_API_TOKEN:-}
+      MCP_URL_SECRET: ${MCP_URL_SECRET:-}
+    ports:
+      # Local only by default: put your HTTPS reverse proxy in front of it.
+      - "${MCP_BIND:-127.0.0.1}:${MCP_PORT:-3100}:3100"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks:
+      - mailflow
+
+networks:
+  mailflow:
+    external: true
+    # "docker network ls" shows the name: <MailFlow's folder name>_mailflow.
+    name: ${MAILFLOW_NETWORK:-mailflow_mailflow}
